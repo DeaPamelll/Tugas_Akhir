@@ -34,12 +34,16 @@ class CartView extends StatelessWidget {
         );
       }
 
-      // Base USD → TARGET
       final fx = curr.factorFromUsdTo(curr.selected.value);
 
       return Scaffold(
+        backgroundColor: const Color(0xFFFFF8F9),
         appBar: AppBar(
           title: const Text('Keranjang'),
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
+          elevation: 0.5,
+          centerTitle: true,
         ),
 
         body: GetBuilder<CartController>(
@@ -87,25 +91,27 @@ class CartView extends StatelessWidget {
                       final it = items[i];
                       final unitUsd = (it.price as num).toDouble();
                       final subUsd = unitUsd * it.qty;
-
                       final unitFx = unitUsd * fx;
                       final subFx = subUsd * fx;
-
                       final checked = cart.isSelected(it.id);
 
                       return Card(
                         elevation: 0.5,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                         child: Padding(
                           padding: const EdgeInsets.all(10),
                           child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // checkbox per item
+                              // Checkbox per item
                               Checkbox(
                                 value: checked,
                                 onChanged: (_) => cart.toggleSelect(it.id),
                               ),
 
-                              // thumbnail
+                              // Thumbnail
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(8),
                                 child: Image.network(
@@ -117,44 +123,65 @@ class CartView extends StatelessWidget {
                               ),
                               const SizedBox(width: 12),
 
-                              // detail
+                              // Detail
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(it.title,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(fontWeight: FontWeight.w700)),
-                                    const SizedBox(height: 6),
+                                    Text(
+                                      it.title,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
 
-                                    // qty + unit price (converted)
+                                    // Baris qty
                                     Row(
                                       children: [
                                         _QtyBtn(icon: Icons.remove, onTap: () => cart.decrease(it.id)),
                                         Padding(
                                           padding: const EdgeInsets.symmetric(horizontal: 10),
-                                          child: Text('${it.qty}',
-                                              style: const TextStyle(fontWeight: FontWeight.bold)),
+                                          child: Text(
+                                            '${it.qty}',
+                                            style: const TextStyle(fontWeight: FontWeight.bold),
+                                          ),
                                         ),
                                         _QtyBtn(icon: Icons.add, onTap: () => cart.increase(it.id)),
-                                        const Spacer(),
+                                      ],
+                                    ),
+
+                                    const SizedBox(height: 10),
+
+                                    // Harga satuan (dipindah ke bawah)
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
                                         Text(
                                           formatMoney(unitFx, curr.selected.value),
-                                          style: const TextStyle(color: Colors.black54),
+                                          style: const TextStyle(
+                                            color: Colors.black87,
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                         ),
                                       ],
                                     ),
 
                                     const SizedBox(height: 6),
 
-                                    // subtotal (converted)
+                                    // Subtotal (dengan warna tegas)
                                     Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        const Spacer(),
                                         Text(
                                           formatMoney(subFx, curr.selected.value),
-                                          style: const TextStyle(fontWeight: FontWeight.w700),
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: rose,
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -162,7 +189,7 @@ class CartView extends StatelessWidget {
                                 ),
                               ),
 
-                              // hapus
+                              // Tombol hapus
                               IconButton(
                                 onPressed: () => cart.remove(it.id),
                                 icon: const Icon(Icons.delete_outline),
@@ -179,12 +206,12 @@ class CartView extends StatelessWidget {
           },
         ),
 
-        // ===== Bottom: dropdown mata uang + total TERPILIH + checkout =====
+        // ===== Bottom bar =====
         bottomNavigationBar: GetBuilder<CartController>(
           builder: (_) {
-            final totalUsdSel = cart.selectedTotal; // hanya terpilih
+            final totalUsdSel = cart.selectedTotal;
             final fx = curr.factorFromUsdTo(curr.selected.value);
-            final totalFxSel  = totalUsdSel * fx;
+            final totalFxSel = totalUsdSel * fx;
 
             return SafeArea(
               child: Container(
@@ -196,14 +223,16 @@ class CartView extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Baris: Dropdown mata uang + total
                     Row(
                       children: [
                         DropdownButtonHideUnderline(
                           child: DropdownButton<String>(
                             value: curr.selected.value,
                             items: ['USD', 'IDR', 'EUR', 'JPY']
-                                .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                                .map((c) => DropdownMenuItem(
+                                      value: c,
+                                      child: Text(c),
+                                    ))
                                 .toList(),
                             onChanged: (v) {
                               if (v != null) curr.selected.value = v;
@@ -222,24 +251,28 @@ class CartView extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 10),
-
-                    // Tombol Checkout Terpilih
                     SizedBox(
                       height: 48,
                       width: double.infinity,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: rose,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
                         onPressed: cart.selectedQty == 0
-                          ? null
-                          : () {
-                              Get.to(() => const CheckoutView());
-                            },
+                            ? null
+                            : () {
+                                Get.to(() => const CheckoutView());
+                              },
                         child: const Text(
                           'Checkout',
-                          style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),

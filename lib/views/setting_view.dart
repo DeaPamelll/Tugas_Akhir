@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tugas_akhir/views/admin_view.dart';
-import 'package:tugas_akhir/views/profil_view.dart';
 
+import 'package:tugas_akhir/views/profil_view.dart';
 import 'widgets/header_widget.dart';
 import 'widgets/footer_widget.dart';
 import '../services/auth_service.dart';
@@ -15,6 +14,16 @@ class SettingView extends StatelessWidget {
   const SettingView({super.key});
 
   static const rose = Color(0xFFE8A0BF);
+  static final page = Colors.grey.shade50;
+  static const card = Colors.white;
+
+  Future<String?> _loadEmail() async {
+    try {
+      return await AuthService().currentEmail(); // <-- pakai currentEmail()
+    } catch (_) {
+      return null;
+    }
+  }
 
   Future<void> _logout(BuildContext context) async {
     final auth = AuthService();
@@ -54,52 +63,83 @@ class SettingView extends StatelessWidget {
     final waktu = Get.find<KWaktuController>();
 
     return Scaffold(
-      appBar: const HeaderWidget(title: 'Pengaturan'),
+      backgroundColor: page,
+      appBar: const HeaderWidget(title: 'Setting'),
       bottomNavigationBar: const FooterWidget(currentIndex: 2),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          // ===== Header Profil (ikon tengah + email) =====
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.fromLTRB(16, 22, 16, 22),
+            decoration: BoxDecoration(
+              color: card,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: Colors.black12.withOpacity(.08)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(.03),
+                  blurRadius: 18,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                CircleAvatar(
+                  radius: 50,
+                  backgroundColor: rose.withOpacity(.15),
+                  child: const Icon(Icons.person_rounded, size: 80, color: rose),
+                ),
+                const SizedBox(height: 10),
+                FutureBuilder<String?>(
+                  future: _loadEmail(),
+                  builder: (context, snap) {
+                    final email = snap.data;
+                    return Text(
+                      email?.isNotEmpty == true ? email! : 'email@pengguna.com',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 16,
+                        color: Colors.black87,
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 18),
+
+          // ===== Menu =====
           const Text(
-            'Menu Pengaturan',
+            'Menu',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 10),
 
-          // ====== PROFIL ======
-          _SettingTile(
+          _PlainTile(
             icon: Icons.person_outline,
-            title: 'Profil Saya',
-            subtitle: 'Lihat & ubah informasi akun',
+            title: 'Profil Admin',
             onTap: () => Get.to(() => const ProfileView()),
           ),
-
-          // ====== TOKO / LBS ======
-          _SettingTile(
+          _PlainTile(
             icon: Icons.storefront_outlined,
-            title: 'Toko Kami (LBS)',
-            subtitle: 'Lihat lokasi toko & layanan terdekat',
+            title: 'Toko Kami',
             onTap: () => Get.to(() => const TokoView()),
           ),
-
-          // ====== SARAN ======
-          _SettingTile(
+          _PlainTile(
             icon: Icons.feedback_outlined,
-            title: 'Saran & Masukan',
-            subtitle: 'Kirimkan ide dan pendapatmu tentang aplikasi ini',
+            title: 'Kesan & Pesan',
             onTap: () => Get.to(() => const SaranView()),
           ),
 
-            _SettingTile(
-            icon: Icons.admin_panel_settings_outlined,
-            title: 'Admin',
-            subtitle: 'Lihat Profil Admin',
-            onTap: () => Get.to(() => const AdminView()),
-          ),
-
-
           const SizedBox(height: 20),
 
-          // ====== ZONA WAKTU ======
+          // ===== Zona Waktu =====
           const Text(
             'Zona Waktu',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
@@ -110,9 +150,9 @@ class SettingView extends StatelessWidget {
             return Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: card,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade200),
+                border: Border.all(color: Colors.black12.withOpacity(.10)),
               ),
               child: Row(
                 children: [
@@ -142,7 +182,7 @@ class SettingView extends StatelessWidget {
 
           const SizedBox(height: 24),
 
-          // ====== LOGOUT ======
+          // ===== Logout =====
           ElevatedButton.icon(
             onPressed: () => _logout(context),
             icon: const Icon(Icons.logout),
@@ -161,27 +201,29 @@ class SettingView extends StatelessWidget {
   }
 }
 
-class _SettingTile extends StatelessWidget {
+class _PlainTile extends StatelessWidget {
   final IconData icon;
   final String title;
-  final String subtitle;
   final VoidCallback onTap;
 
-  const _SettingTile({
+  const _PlainTile({
     required this.icon,
     required this.title,
-    required this.subtitle,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0.5,
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+        color: SettingView.card,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.black12.withOpacity(.10)),
+      ),
       child: ListTile(
-        leading: Icon(icon, color: const Color(0xFFE8A0BF)),
+        leading: Icon(icon, color: SettingView.rose),
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
-        subtitle: Text(subtitle),
         trailing: const Icon(Icons.chevron_right),
         onTap: onTap,
       ),

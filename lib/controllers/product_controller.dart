@@ -7,16 +7,18 @@ class ProductController extends GetxController {
   final ApiService api;
   ProductController(this.api);
 
-  // State
+  // Data
   final categories = <String>[].obs;   // semua kategori dari API
   final all = <Product>[].obs;         // cache semua produk (untuk "Semua")
   final visible = <Product>[].obs;     // produk yang sedang ditampilkan
 
+  // State
   final selectedCategory = RxnString(); // null = Semua
-  final isLoading = false.obs;          // loading awal / ganti kategori
-  final isSearching = false.obs;        // loading khusus search
+  final isBoot = true.obs;              // loading awal (pertama kali buka Home)
+  final isCatLoading = false.obs;       // loading saat ganti kategori
+  final isSearching = false.obs;        // loading saat pencarian
 
-  // Search dengan debounce
+  // Search (debounce)
   final query = ''.obs;
   Worker? _debouncer;
 
@@ -24,14 +26,14 @@ class ProductController extends GetxController {
   void onInit() {
     super.onInit();
     init();
-    _debouncer =
-        debounce(query, (_) => _runSearch(), time: const Duration(milliseconds: 400));
+    _debouncer = debounce(query, (_) => _runSearch(), time: const Duration(milliseconds: 400));
   }
 
   /// Muat kategori & produk awal
   Future<void> init() async {
     try {
-      isLoading.value = true;
+      isBoot.value = true;
+
       categories.value = await api.fetchCategories();
 
       final list = await api.fetchProducts(limit: 100);
@@ -40,26 +42,28 @@ class ProductController extends GetxController {
       visible.assignAll(list);
 
       selectedCategory.value = null; // default "Semua"
-    } catch (e) {
-      // kamu bisa tambahkan Snackbar/log di sini
+    } catch (_) {
+      // optional: snackbar/log
     } finally {
-      isLoading.value = false;
+      isBoot.value = false;
     }
   }
 
   /// Dipanggil dari onChanged di TextField
   void onQueryChanged(String v) {
     query.value = v;
+    if (v.trim().isEmpty) {
+      // Kembalikan list ke kategori yang sedang aktif TANPA mengubah highlight
+      // (tidak tampilkan loader global)
+      pickCategory(selectedCategory.value, silent: true);
+    }
   }
 
-  /// Jalankan pencarian (dengan isSearching, tidak mengosongkan grid)
+  /// Jalankan pencarian
   Future<void> _runSearch() async {
     final q = query.value.trim();
-    if (q.isEmpty) {
-      // kembalikan ke filter kategori terakhir
-      await pickCategory(selectedCategory.value);
-      return;
-    }
+    if (q.isEmpty) return; // biar tidak menimpa hasil kategori
+
     try {
       isSearching.value = true;
       final res = await api.searchProducts(q);
@@ -72,24 +76,26 @@ class ProductController extends GetxController {
   }
 
   /// Pilih kategori; null = Semua
-  Future<void> pickCategory(String? cat) async {
+  /// silent=true → jangan tunjukkan spinner kategori (dipakai saat clear search).
+  Future<void> pickCategory(String? cat, {bool silent = false}) async {
     selectedCategory.value = cat;
 
-    // Kalau "Semua" → pakai cache all
+    // "Semua" → pakai cache all (tanpa request network)
     if (cat == null) {
       final copy = [...all]..shuffle();
       visible.assignAll(copy);
+      if (!silent) isCatLoading.value = false;
       return;
     }
 
     try {
-      isLoading.value = true;
+      if (!silent) isCatLoading.value = true;
       final list = await api.fetchByCategory(cat);
       visible.assignAll(list);
     } catch (_) {
       // optional: error handling
     } finally {
-      isLoading.value = false;
+      if (!silent) isCatLoading.value = false;
     }
   }
 

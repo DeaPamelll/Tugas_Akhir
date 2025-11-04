@@ -16,7 +16,7 @@ class HeaderWidget extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: blush,
       elevation: 0,
       centerTitle: false,
-      title: Text(title ?? "D'Shop", style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 20)),
+      title: Text(title ?? "D'Verse", style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 20)),
       actions: [
         GetBuilder<CartController>( // rebuild saat setActiveUser open box baru
           builder: (_) {

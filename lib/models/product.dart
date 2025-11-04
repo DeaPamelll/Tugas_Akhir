@@ -78,7 +78,6 @@ class ProductAdapter extends TypeAdapter<Product> {
       ..writeByte(2)..write(o.description)
       ..writeByte(3)..write(o.price)
       ..writeByte(4)..write(o.thumbnail)
-      ..writeByte(5)..write(o.images ?? [])
       ..writeByte(6)..write(o.category)
       ..writeByte(7)..write(o.rating)
       ..writeByte(8)..write(o.brand)

@@ -8,12 +8,11 @@ import 'package:tugas_akhir/views/widgets/header_widget.dart';
 import '../controllers/product_controller.dart';
 import '../models/product.dart';
 import '../services/api_service.dart';
-import '../services/utils_service.dart'; 
+import '../services/utils_service.dart';
 import 'detail.dart';
 
 class HomeView extends StatelessWidget {
   HomeView({super.key}) {
-    // pastikan CartController ada (global)
     if (!Get.isRegistered<CartController>()) {
       Get.put(CartController(), permanent: true);
     }
@@ -24,7 +23,6 @@ class HomeView extends StatelessWidget {
   final _search = TextEditingController();
 
   static const ivory = Color(0xFFFFF8F0);
-  static const blush = Color(0xFFFFDDE1);
   static const rose  = Color(0xFFE8A0BF);
 
   @override
@@ -33,7 +31,8 @@ class HomeView extends StatelessWidget {
       backgroundColor: ivory,
       appBar: const HeaderWidget(),
       body: Obx(() {
-        if (pc.isLoading.value) {
+        // Loader hanya saat BOOT pertama
+        if (pc.isBoot.value) {
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -41,124 +40,172 @@ class HomeView extends StatelessWidget {
           onRefresh: pc.init,
           child: CustomScrollView(
             slivers: [
-
+              // ============ Search ============
               SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-                  child: Column(
-                    children: [
-                     TextField(
-                      controller: _search,
-                      onChanged: pc.onQueryChanged, // debounce ada di controller
-                      decoration: InputDecoration(
-                        hintText: 'Cari produk…',
-                        prefixIcon: const Icon(Icons.search),
-                        filled: true,
-                        fillColor: const Color(0xFFFFF8F9),
-                        contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24),
-                          borderSide: const BorderSide(color: Color(0xFFFFC0CB)),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(24),
-                          borderSide: const BorderSide(color: rose, width: 2),
-                        ),
-                      ),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment(0, -1),
+                      end: Alignment(0, 1),
+                      colors: [Color(0xFFFFF0F6), Color(0x00FFF0F6)],
                     ),
-
-                      if (pc.isSearching.value)
-                        const Padding(
-                          padding: EdgeInsets.only(top: 8.0),
-                          child: LinearProgressIndicator(minHeight: 2),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextField(
+                          controller: _search,
+                          onChanged: pc.onQueryChanged,
+                          decoration: InputDecoration(
+                            hintText: 'Cari produk…',
+                            prefixIcon: const Icon(Icons.search),
+                            filled: true,
+                            fillColor: const Color(0xFFFFF8F9),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(22),
+                              borderSide: BorderSide(color: rose.withOpacity(.35)),
+                            ),
+                            focusedBorder: const OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(22)),
+                              borderSide: BorderSide(color: rose, width: 2),
+                            ),
+                          ),
                         ),
-                    ],
+                        if (pc.isSearching.value)
+                          const Padding(
+                            padding: EdgeInsets.only(top: 8.0),
+                            child: LinearProgressIndicator(minHeight: 2),
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               ),
 
-              // ================ Kategori Dinamis (horizontal) ================
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: 100,
-                  child: Obx(() {
-                    final cats = pc.categories;
-                    if (cats.isEmpty) {
-                      return const Center(child: CircularProgressIndicator(strokeWidth: 2));
-                    }
+              // ============ Kategori (chips) ============
+                  SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 96,
+                    child: Obx(() {
+                      final cats = pc.categories;
 
-                    String catLabel(dynamic c) {
-                      if (c is Map) return (c['name'] ?? c['slug'] ?? '').toString();
-                      return c.toString();
-                    }
+                      // >>> PENTING: baca selectedCategory di sini supaya Obx subscribe <<<
+                      final sel = pc.selectedCategory.value;
 
-                    String? catSlug(dynamic c) {
-                      if (c == '__ALL__') return null; // sentinel "Semua"
-                      if (c is Map) return (c['slug'] ?? c['name'] ?? '').toString().toLowerCase();
-                      return c.toString().toLowerCase();
-                    }
+                      if (cats.isEmpty) {
+                        return const Center(child: CircularProgressIndicator(strokeWidth: 2));
+                      }
 
-                    final list = ['__ALL__', ...cats];
+                      String catLabel(dynamic c) {
+                        if (c is Map) return (c['name'] ?? c['slug'] ?? '').toString();
+                        return c.toString();
+                      }
 
-                    return ListView.separated(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      scrollDirection: Axis.horizontal,
-                      itemCount: list.length,
-                      separatorBuilder: (_, __) => const SizedBox(width: 10),
-                      itemBuilder: (_, i) {
-                        final raw   = list[i];
-                        final label = raw == '__ALL__' ? 'Semua' : catLabel(raw);
-                        final slug  = catSlug(raw);
+                      String? catSlug(dynamic c) {
+                        if (c == '_ALL_') return null; // sentinel "Semua"
+                        if (c is Map) return (c['slug'] ?? c['name'] ?? '').toString().toLowerCase();
+                        return c.toString().toLowerCase();
+                      }
 
-                        final selected = (slug == null && pc.selectedCategory.value == null) ||
-                                         (slug != null && pc.selectedCategory.value == slug);
+                      final list = ['_ALL_', ...cats];
 
-                        return _CategoryCard(
-                          label: titleCase(label),
-                          icon: iconForCategory(label),
-                          selected: selected,
-                          onTap: () {
-                            _search.clear();
-                            pc.onQueryChanged('');
-                            pc.pickCategory(slug); // slug boleh null untuk "Semua"
-                          },
-                        );
-                      },
-                    );
-                  }),
-                ),
-              ),
+                      return ListView.separated(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        scrollDirection: Axis.horizontal,
+                        itemCount: list.length,
+                        separatorBuilder: (_, __) => const SizedBox(width: 10),
+                        itemBuilder: (_, i) {
+                          final raw   = list[i];
+                          final label = raw == '_ALL_' ? 'Semua' : catLabel(raw);
+                          final slug  = catSlug(raw);
 
-              // ================= Grid Produk =================
-              SliverPadding(
-                padding: const EdgeInsets.all(8),
-                sliver: SliverGrid(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 0.66,
-                    crossAxisSpacing: 8,
-                    mainAxisSpacing: 8,
-                  ),
-                  delegate: SliverChildBuilderDelegate(
-                    (context, i) {
-                      final p = pc.visible[i];
-                      return _ProductCard(
-                        p: p,
-                        onAdd: () {
-                          cart.add(p, qty: 1);
-                          Get.snackbar(
-                            'Keranjang',
-                            'Ditambahkan: ${p.title}',
-                            snackPosition: SnackPosition.BOTTOM,
-                            margin: const EdgeInsets.all(12),
+                          // pakai 'sel' yang sudah dibaca di atas
+                          final selected = (slug == null && sel == null) || (slug != null && sel == slug);
+
+                          return SizedBox(
+                            width: 110,
+                            child: _CategoryChip(
+                              label: titleCase(label),
+                              icon: iconForCategory(label),
+                              selected: selected,
+                              onTap: () {
+                                pc.pickCategory(slug);   // update kategori
+                                _search.clear();         // kosongkan pencarian
+                                pc.onQueryChanged('');   // biar hasil kembali ke kategori aktif
+                              },
+                            ),
                           );
                         },
-                        onTap: () => Get.to(() => DetailView(p: p)),
                       );
-                    },
-                    childCount: pc.visible.length,
+                    }),
                   ),
                 ),
+
+
+              // ============ Grid Produk ============
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                sliver: Obx(() {
+                  // Tampilkan grid selalu; saat ganti kategori, tampilkan overlay loader ringan
+                  final grid = SliverGrid(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.66,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      (context, i) {
+                        final p = pc.visible[i];
+                        return _ProductCard(
+                          p: p,
+                          onAdd: () {
+                            cart.add(p, qty: 1);
+                            Get.snackbar(
+                              'Keranjang',
+                              'Ditambahkan: ${p.title}',
+                              snackPosition: SnackPosition.BOTTOM,
+                              margin: const EdgeInsets.all(12),
+                            );
+                          },
+                          onTap: () => Get.to(() => DetailView(p: p)),
+                        );
+                      },
+                      childCount: pc.visible.length,
+                    ),
+                  );
+
+                  // Bungkus dengan Stack via SliverToBoxAdapter agar bisa overlay loader
+                  return SliverToBoxAdapter(
+                    child: Stack(
+                      children: [
+                        // Grid di dalam layout normal
+                        CustomScrollView(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          slivers: [grid],
+                        ),
+
+                        // Overlay tipis saat isCatLoading
+                        if (pc.isCatLoading.value)
+                          Positioned.fill(
+                            child: Container(
+                              color: Colors.white.withOpacity(0.35),
+                              child: const Center(
+                                child: SizedBox(
+                                  width: 28, height: 28,
+                                  child: CircularProgressIndicator(strokeWidth: 2.5),
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                }),
               ),
 
               const SliverToBoxAdapter(child: SizedBox(height: 16)),
@@ -171,15 +218,13 @@ class HomeView extends StatelessWidget {
   }
 }
 
-
-
-class _CategoryCard extends StatelessWidget {
+class _CategoryChip extends StatelessWidget {
   final String label;
   final IconData icon;
   final bool selected;
   final VoidCallback onTap;
 
-  const _CategoryCard({
+  const _CategoryChip({
     required this.label,
     required this.icon,
     required this.selected,
@@ -188,32 +233,49 @@ class _CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: selected ? const Color(0xFFFFF0F5) : Colors.white,
+    const rose = Color(0xFFE8A0BF);
+
+    return InkWell(
       borderRadius: BorderRadius.circular(16),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          width: 120,
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 26, color: const Color(0xFFE8A0BF)),
-              const SizedBox(height: 6),
-              Text(
-                label,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
-                ),
-              ),
-            ],
+      onTap: onTap,
+      child: Container(
+        height: 90,
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        decoration: BoxDecoration(
+          color: selected ? const Color(0xFFFFF0F6) : Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: selected ? rose : rose.withOpacity(.28),
+            width: selected ? 1.6 : 1.1,
           ),
+          boxShadow: selected
+              ? [
+                  BoxShadow(
+                    color: rose.withOpacity(.18),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+              : [],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 22, color: rose),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 12.5,
+                fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+                color: Colors.black.withOpacity(.85),
+                height: 1.15,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -239,59 +301,123 @@ class _ProductCard extends StatelessWidget {
     final int emptyStars = 5 - fullStars - (hasHalf ? 1 : 0);
 
     return InkWell(
+      borderRadius: BorderRadius.circular(16),
       onTap: onTap,
       child: Container(
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Expanded(
-            child: ClipRRect(
-              borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
-              child: Image.network(p.thumbnail, fit: BoxFit.cover, width: double.infinity),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFFE8A0BF).withOpacity(.20)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(.05),
+              blurRadius: 14,
+              offset: const Offset(0, 8),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(p.title, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.w800)),
-              const SizedBox(height: 2),
-              const SizedBox(height: 6),
-
-              // ====== Rating Bintang ======
-              Row(
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(16), topRight: Radius.circular(16),
+                ),
+                child: Image.network(
+                  p.thumbnail,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // bintang full
-                  ...List.generate(
-                    fullStars,
-                    (_) => Icon(Icons.star, size: 14, color: Colors.amber.shade600),
-                  ),
-                  // setengah bintang (opsional)
-                  if (hasHalf) Icon(Icons.star_half, size: 14, color: Colors.amber.shade600),
-                  // bintang kosong
-                  ...List.generate(
-                    emptyStars,
-                    (_) => Icon(Icons.star_border, size: 14, color: Colors.amber.shade600),
-                  ),
-                  const SizedBox(width: 4),
                   Text(
-                    rating.toStringAsFixed(1),
-                    style: const TextStyle(fontSize: 12, color: Colors.black54, fontWeight: FontWeight.w500),
+                    p.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 13.5,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      ...List.generate(
+                        fullStars,
+                        (_) => Icon(Icons.star, size: 14, color: Colors.amber.shade600),
+                      ),
+                      if (hasHalf) Icon(Icons.star_half, size: 14, color: Colors.amber.shade600),
+                      ...List.generate(
+                        emptyStars,
+                        (_) => Icon(Icons.star_border, size: 14, color: Colors.amber.shade600),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        rating.toStringAsFixed(1),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.black54,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFF0F6),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: const Color(0xFFE8A0BF).withOpacity(.35)),
+                        ),
+                        child: Text(
+                          'USD ${p.price.toStringAsFixed(2)}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w800,
+                            color: Colors.black.withOpacity(.8),
+                            fontSize: 12.5,
+                          ),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: onAdd,
+                        borderRadius: BorderRadius.circular(12),
+                        child: Ink(
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFE8A0BF),
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFFE8A0BF).withOpacity(.28),
+                                blurRadius: 10,
+                                offset: const Offset(0, 5),
+                              ),
+                            ],
+                          ),
+                          child: const SizedBox(
+                            height: 36, width: 42,
+                            child: Center(
+                              child: Icon(Icons.add_shopping_cart, color: const Color(0xFFE8A0BF), size: 20),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-
-              const SizedBox(height: 6),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Text('USD ${p.price.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.bold)),
-                IconButton(
-                  onPressed: onAdd,
-                  icon: const Icon(Icons.add_shopping_cart),
-                  color: const Color(0xFFE8A0BF),
-                  tooltip: 'Tambah ke keranjang',
-                ),
-              ]),
-            ]),
-          )
-        ]),
+            )
+          ],
+        ),
       ),
     );
   }

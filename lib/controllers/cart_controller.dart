@@ -8,7 +8,7 @@ class CartController extends GetxController {
   final RxnInt _userId = RxnInt();
   Box<CartItem>? _box; // box aktif untuk user sekarang
 
-  // ---------- Selection untuk checkout (UNIQUE) ----------
+  
   final Set<int> _selectedIds = {}; // simpan ID product yg dipilih
 
   bool isSelected(int id) => _selectedIds.contains(id);
