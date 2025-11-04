@@ -15,7 +15,7 @@ class FooterWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<CartController>(
       builder: (cart) {
-        final badge = cart.distinctCount; // item unik, bukan total qty
+        final badge = cart.distinctCount; 
 
         return BottomNavigationBar(
           currentIndex: currentIndex,

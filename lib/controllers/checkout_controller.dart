@@ -7,11 +7,10 @@ class CheckoutController extends GetxController {
 
   CheckoutController({required this.items});
 
-  // dropdowns
   final RxString payment = 'COD'.obs;
   final RxString courier = 'JNE'.obs;
 
-  // mata uang (sudah kamu pakai untuk Cart)
+  
   final KMataUangController curr = Get.find<KMataUangController>();
 
   double get totalUsd =>

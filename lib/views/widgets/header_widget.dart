@@ -18,9 +18,9 @@ class HeaderWidget extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: false,
       title: Text(title ?? "D'Verse", style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 20)),
       actions: [
-        GetBuilder<CartController>( // rebuild saat setActiveUser open box baru
+        GetBuilder<CartController>( 
           builder: (_) {
-            final count = cart.distinctCount; // item unik (bukan total qty)
+            final count = cart.distinctCount; 
             return Stack(
               clipBehavior: Clip.none,
               children: [

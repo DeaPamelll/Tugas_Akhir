@@ -19,7 +19,7 @@ class SettingView extends StatelessWidget {
 
   Future<String?> _loadEmail() async {
     try {
-      return await AuthService().currentEmail(); // <-- pakai currentEmail()
+      return await AuthService().currentEmail(); 
     } catch (_) {
       return null;
     }
@@ -69,7 +69,7 @@ class SettingView extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // ===== Header Profil (ikon tengah + email) =====
+  
           Container(
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(16, 22, 16, 22),
@@ -113,8 +113,6 @@ class SettingView extends StatelessWidget {
           ),
 
           const SizedBox(height: 18),
-
-          // ===== Menu =====
           const Text(
             'Menu',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
@@ -139,7 +137,7 @@ class SettingView extends StatelessWidget {
 
           const SizedBox(height: 20),
 
-          // ===== Zona Waktu =====
+
           const Text(
             'Zona Waktu',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
@@ -182,7 +180,7 @@ class SettingView extends StatelessWidget {
 
           const SizedBox(height: 24),
 
-          // ===== Logout =====
+   
           ElevatedButton.icon(
             onPressed: () => _logout(context),
             icon: const Icon(Icons.logout),

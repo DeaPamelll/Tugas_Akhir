@@ -15,7 +15,7 @@ class Store {
 }
 
 class StoreService {
-  // 5 koordinat toko (yang kamu kirim)
+  // Sementara koordinat mirota dl 
   static const List<Store> stores = [
     Store(
       name: "D'Shop – Toko 1",
@@ -49,7 +49,6 @@ class StoreService {
     ),
   ];
 
-  /// Hitung jarak (km) dari posisi user ke setiap toko, urut terdekat.
   Future<List<Map<String, dynamic>>> distancesFrom(Position userPos) async {
     final list = stores.map((s) {
       final meters = Geolocator.distanceBetween(

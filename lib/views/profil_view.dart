@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
 
-  // Palette
+
   static const rose     = Color(0xFFE8A0BF);
   static const lightBg  = Color(0xFFFFF8F9);
   static const ivory    = Color(0xFFFFF8F0);
@@ -32,7 +32,7 @@ class ProfileView extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
           child: Column(
             children: [
-              // ===== Avatar dengan ring gradien halus =====
+            
               Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
@@ -66,7 +66,7 @@ class ProfileView extends StatelessWidget {
 
               const SizedBox(height: 14),
 
-              // ===== Nama =====
+            
               const Text(
                 'Dea Pamelia',
                 textAlign: TextAlign.center,
@@ -80,7 +80,7 @@ class ProfileView extends StatelessWidget {
 
               const SizedBox(height: 6),
 
-              // ===== Chip NIM + Email =====
+              
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
@@ -99,7 +99,7 @@ class ProfileView extends StatelessWidget {
 
               const SizedBox(height: 16),
 
-              // ===== Username sosmed (kartu tipis) =====
+            
               _ThinCard(
                 child: Row(
                   children: const [
@@ -119,28 +119,7 @@ class ProfileView extends StatelessWidget {
 
               const SizedBox(height: 14),
 
-              // ===== Tentang (ringkas) =====
-              _ThinCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const _SectionTitle('Tentang'),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Mahasiswi yang suka membangun aplikasi mobile yang manis, rapih, '
-                      'dan ramah pengguna. Pencinta UI yang clean dan warna-warna hangat.',
-                      style: TextStyle(
-                        height: 1.5,
-                        color: Colors.black.withOpacity(.75),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 14),
-
-              // ===== Hobi (chip grid) =====
+            
               _ThinCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -154,15 +133,6 @@ class ProfileView extends StatelessWidget {
 
               const SizedBox(height: 10),
 
-              // ===== Footer kecil =====
-              Text(
-                'Last update • tetap semangat & stay hydrated ✨',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 12.5,
-                  color: Colors.black.withOpacity(.45),
-                ),
-              ),
             ],
           ),
         ),
@@ -171,7 +141,6 @@ class ProfileView extends StatelessWidget {
   }
 }
 
-// ---------- Widgets kecil & bersih ----------
 
 class _ThinCard extends StatelessWidget {
   const _ThinCard({required this.child});

@@ -10,7 +10,7 @@ class TransactionModel extends HiveObject {
   @HiveField(1)
   final int? userId;
   
-  @HiveField(2)                 // <— siapa pemilik transaksi
+  @HiveField(2)                 
   final List<CartItem> items;
 
   @HiveField(3)

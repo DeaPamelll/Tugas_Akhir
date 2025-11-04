@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'controllers/cart_controller.dart';
-import 'controllers/wishlist_controller.dart';
 import 'controllers/k_mata_uang_controller.dart';
 import 'controllers/transaksi_controller.dart';
 import 'controllers/k_waktu_controller.dart';
@@ -24,7 +23,7 @@ Future<void> main() async {
   final dir = await getApplicationDocumentsDirectory();
   await Hive.initFlutter(dir.path);
 
-  // ===== REGISTER ADAPTERS =====
+  
   if (!Hive.isAdapterRegistered(UserAdapter().typeId)) {
     Hive.registerAdapter(UserAdapter());
   }
@@ -38,17 +37,17 @@ Future<void> main() async {
     Hive.registerAdapter(TransactionModelAdapter());
   }
 
-  // ===== OPEN BOXES =====
-  await Hive.openBox('session');                        // sesi login
-  await Hive.openBox<User>('users');                    // storage user
-  await Hive.openBox<CartItem>('cart_guest');           // keranjang default guest
-  await Hive.openBox<TransactionModel>('transactions'); // transaksi
-  await Hive.openBox('prefs');                          // preferensi (zona waktu, dsb)
+  
+  await Hive.openBox('session');                       
+  await Hive.openBox<User>('users');                   
+  await Hive.openBox<CartItem>('cart_guest');           
+  await Hive.openBox<TransactionModel>('transactions'); 
+  await Hive.openBox('prefs');                          
 
-  // ===== INIT NOTIFICATIONS =====
+  
   await NotificationService.initialize();
 
-  // ===== REGISTER CONTROLLERS (permanent) =====
+  
   if (!Get.isRegistered<KMataUangController>()) {
     Get.put(KMataUangController(KMataUangService()), permanent: true);
   }
@@ -58,16 +57,13 @@ Future<void> main() async {
   if (!Get.isRegistered<CartController>()) {
     Get.put(CartController(), permanent: true);
   }
-  if (!Get.isRegistered<WishlistController>()) {
-    Get.put(WishlistController(), permanent: true);
-  }
   if (!Get.isRegistered<TransaksiController>()) {
     Get.put(TransaksiController(), permanent: true);
   }
 
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
-    title: "D'Shop",
+    title: "D'Verse",
     home: LandingView(), 
     getPages: [
       GetPage(name: '/transaksi', page: () => const TransaksiView()),

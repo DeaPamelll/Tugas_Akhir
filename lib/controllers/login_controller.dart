@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tugas_akhir/controllers/cart_controller.dart';
 import 'package:tugas_akhir/controllers/transaksi_controller.dart';
-import 'package:tugas_akhir/controllers/wishlist_controller.dart';
 import 'package:tugas_akhir/views/home.dart';
 import '../services/auth_service.dart';
 
@@ -14,7 +13,7 @@ class LoginController extends GetxController {
   final passwordController = TextEditingController();
 
   var isLoading = false.obs;
-  var isPasswordVisible = false.obs; // Untuk show/hide password
+  var isPasswordVisible = false.obs; 
 
   void togglePasswordVisibility() {
     isPasswordVisible.value = !isPasswordVisible.value;
@@ -34,21 +33,20 @@ class LoginController extends GetxController {
       if (result.startsWith("Success")) {
         Get.snackbar(
           "Login Berhasil",
-          result, // "Halo, [username]!"
+          result, 
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.blue,
           colorText: Colors.white,
         );
         final uid = await _authService.currentUserId();
       Get.find<CartController>().setActiveUser(uid);
-      Get.find<WishlistController>().setActiveUser(uid);
       Get.find<TransaksiController>().setActiveUser(uid);
 
         Get.offAll(() => HomeView());
       } else {
         Get.snackbar(
           "Login Gagal",
-          result, // Pesan error dari service
+          result, 
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white,

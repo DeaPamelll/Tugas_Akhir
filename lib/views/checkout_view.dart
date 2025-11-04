@@ -1,4 +1,3 @@
-// lib/views/checkout_view.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -22,12 +21,10 @@ class _CheckoutViewState extends State<CheckoutView> {
   final curr = Get.find<KMataUangController>();
   final trx  = Get.find<TransaksiController>();
 
-  // Palet sederhana
   static const rose  = Color(0xFFE8A0BF);
   static final page  = Colors.grey.shade50;
   static const card  = Colors.white;
 
-  // ==== Payment (radio) ====
   final List<_PaymentOpt> _payments = const [
     _PaymentOpt('COD'),
     _PaymentOpt('E-Wallet'),
@@ -36,7 +33,6 @@ class _CheckoutViewState extends State<CheckoutView> {
   ];
   String payment = '';
 
-  // ==== Shipping (vertical cards) ====
   final List<_ShipOpt> _ships = const [
     _ShipOpt('Hemat',   '± 5 hari', Duration(days: 5), Icons.savings_outlined),
     _ShipOpt('Regular', '± 4 hari', Duration(days: 4), Icons.local_shipping_outlined),
@@ -53,7 +49,7 @@ class _CheckoutViewState extends State<CheckoutView> {
 
   @override
   Widget build(BuildContext context) {
-    final selected = cart.selectedItems; // ringkasan item terpilih tetap ada
+    final selected = cart.selectedItems; 
     if (selected.isEmpty) {
       return Scaffold(
         backgroundColor: page,
@@ -87,7 +83,7 @@ class _CheckoutViewState extends State<CheckoutView> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 140),
         children: [
-          // ==== Ringkasan (tetap seperti tampilan awal) ====
+
           const _SectionTitle('Ringkasan'),
           Container(
             decoration: BoxDecoration(
@@ -115,7 +111,7 @@ class _CheckoutViewState extends State<CheckoutView> {
 
           const SizedBox(height: 20),
 
-          // ==== Pengiriman (diubah: 4 kartu vertikal memanjang) ====
+
           const _SectionTitle('Pengiriman'),
           _ShippingList(
             options: _ships,
@@ -124,7 +120,7 @@ class _CheckoutViewState extends State<CheckoutView> {
           ),
 
           const SizedBox(height: 12),
-          // Perkiraan sampai (tetap ada tampilan awal)
+
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             decoration: BoxDecoration(
@@ -154,7 +150,7 @@ class _CheckoutViewState extends State<CheckoutView> {
 
           const SizedBox(height: 20),
 
-          // ==== Total (tetap) ====
+ 
           const _SectionTitle('Total'),
           Container(
             decoration: BoxDecoration(
@@ -181,7 +177,7 @@ class _CheckoutViewState extends State<CheckoutView> {
         ],
       ),
 
-      // ==== Tombol Bayar (tetap) ====
+
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -218,7 +214,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                   );
                   if (confirmed != true) return;
 
-                  // 1) Simpan transaksi
+
                   await trx.recordPayment(
                     items: List<CartItem>.from(cart.selectedItems),
                     total: totalFx,
@@ -227,10 +223,10 @@ class _CheckoutViewState extends State<CheckoutView> {
                     shipping: _selectedShip.name,
                   );
 
-                  // 2) Hapus item terpilih
+   
                   cart.removeSelected();
 
-                  // 3) Notifikasi
+     
                   await NotificationService.showSuccess(
                     'Pembayaran Berhasil',
                     'Total: ${formatMoney(totalFx, curr.selected.value)}\n'
@@ -238,7 +234,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                     'Perkiraan tiba: ${formatEta(eta)}',
                   );
 
-                  // 4) Pindah ke Transaksi + kirim ETA (kalau mau dipakai di detail)
+        
                   Get.offAll(() => const TransaksiView(), arguments: {
                     'eta': eta.toIso8601String(),
                     'shipOption': _selectedShip.name,
@@ -257,7 +253,6 @@ class _CheckoutViewState extends State<CheckoutView> {
   }
 }
 
-// ====== Widgets sederhana & yang diubah ======
 
 class _SectionTitle extends StatelessWidget {
   const _SectionTitle(this.text);
@@ -291,8 +286,8 @@ class _SummaryTile extends StatelessWidget {
   final String title;
   final String thumb;
   final int qty;
-  final String secondary; // contoh: x2 • USD 10.00
-  final String trailing;  // subtotal
+  final String secondary; 
+  final String trailing;  
 
   @override
   Widget build(BuildContext context) {
@@ -320,7 +315,7 @@ class _SummaryTile extends StatelessWidget {
   }
 }
 
-// === Shipping list: 4 kartu vertikal memanjang ===
+
 class _ShippingList extends StatelessWidget {
   final List<_ShipOpt> options;
   final _ShipOpt selected;
@@ -369,7 +364,6 @@ class _ShippingList extends StatelessWidget {
   }
 }
 
-// === Payment radio: opsi bulat (radio button), bukan tombol bulat ===
 class _PaymentRadioGroup extends StatelessWidget {
   final List<_PaymentOpt> options;
   final String value;
@@ -408,7 +402,7 @@ class _PaymentRadioGroup extends StatelessWidget {
   }
 }
 
-// ==== Models kecil untuk opsi ====
+
 class _ShipOpt {
   final String name;
   final String label;

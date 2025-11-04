@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/cart_controller.dart';
 import '../models/product.dart';
-import 'cart_view.dart'; // arahkan ke halaman keranjang
+import 'cart_view.dart'; 
 
 class DetailView extends StatelessWidget {
   final Product p;
@@ -34,7 +34,7 @@ class DetailView extends StatelessWidget {
         ),
         iconTheme: const IconThemeData(color: Colors.black87),
         actions: [
-          // Ikon keranjang + badge
+
           GetBuilder<CartController>(
             builder: (_) {
               final count = cart.distinctCount;
@@ -76,7 +76,7 @@ class DetailView extends StatelessWidget {
 
       body: ListView(
         children: [
-          // --- Gambar produk ---
+
           Hero(
             tag: p.id ?? p.title,
             child: AspectRatio(
@@ -148,7 +148,7 @@ class DetailView extends StatelessWidget {
         ],
       ),
 
-      // --- Tombol di bawah ---
+
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -192,7 +192,7 @@ class DetailView extends StatelessWidget {
   }
 }
 
-// Tag kecil untuk kategori atau info tambahan
+
 class _InfoTag extends StatelessWidget {
   final IconData icon;
   final String label;

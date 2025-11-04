@@ -1,9 +1,9 @@
 import 'package:hive/hive.dart';
 
 class CartItem {
-  final int id;            // product id
+  final int id;            
   final String title;
-  final double price;      // harga per item
+  final double price;      
   final String thumbnail;
   int qty;
 
@@ -18,7 +18,6 @@ class CartItem {
   double get subTotal => price * qty;
 }
 
-// Adapter manual (tanpa build_runner / .g.dart)
 class CartItemAdapter extends TypeAdapter<CartItem> {
   @override
   final int typeId = 11;

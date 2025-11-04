@@ -6,14 +6,11 @@ import 'register_view.dart';
 class LandingView extends StatelessWidget {
   LandingView({super.key});
 
-  final Color primaryPink = const Color(0xFFE8A0BF); // Pink pekat untuk BG
-  final Color lightPinkIcon = const Color.fromARGB(255, 249, 249, 249); // Pink muda untuk ikon
+  final Color primaryPink = const Color(0xFFE8A0BF);
+  final Color lightPinkIcon = const Color.fromARGB(255, 249, 249, 249);
   final Color whiteColor = Colors.white;
 
-  // 2. Definisikan ukuran untuk icon circle agar konsisten
   final double iconCircleRadius = 60.0;
-  
-  // 3. Definisikan di mana lengkungan dimulai (35% dari atas layar)
   final double waveStartFraction = 0.35;
 
   @override
@@ -21,18 +18,16 @@ class LandingView extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
-    // Hitung posisi Y (vertikal) di mana lengkungan dimulai
     final double waveStartY = screenHeight * waveStartFraction;
 
     return Scaffold(
-      backgroundColor: whiteColor, // Latar belakang atas (putih)
+      backgroundColor: whiteColor,
       body: Stack(
         children: [
-          // --- BAGIAN 1: Latar Belakang Pink Melengkung ---
           ClipPath(
             clipper: BottomWaveClipper(
               waveStartFraction: waveStartFraction,
-              waveCurveHeight: 80.0, // Sesuaikan kedalaman lengkungan di sini
+              waveCurveHeight: 80.0,
             ),
             child: Container(
               color: primaryPink,
@@ -40,8 +35,6 @@ class LandingView extends StatelessWidget {
               width: screenWidth,
             ),
           ),
-
-          // --- BAGIAN 2: Konten Utama (Teks & Tombol) ---
           SafeArea(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -52,17 +45,14 @@ class LandingView extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        // Spacer untuk memberi ruang bagi ikon yang diposisikan di atas
                         SizedBox(height: waveStartY + iconCircleRadius - 20),
-
-                        
                         Text(
                           "D’Verse",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: whiteColor, 
+                            color: whiteColor,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -75,13 +65,11 @@ class LandingView extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 48),
-
-                        // Tombol Login (sudah ada, di-restyle)
                         ElevatedButton(
                           onPressed: () => Get.to(() => LoginView()),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: whiteColor,
-                            foregroundColor: primaryPink, // Teks warna pink
+                            foregroundColor: primaryPink,
                             minimumSize: const Size(double.infinity, 50),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -95,8 +83,6 @@ class LandingView extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 20),
-
-                        // Tombol Register (sudah ada, di-restyle)
                         OutlinedButton(
                           onPressed: () => Get.to(() => RegisterView()),
                           style: OutlinedButton.styleFrom(
@@ -115,16 +101,13 @@ class LandingView extends StatelessWidget {
                             ),
                           ),
                         ),
-
-                        const Spacer(), // Mendorong copyright ke bawah
-
-
+                        const Spacer(),
                         Text(
                           "© 2025 D'Verse",
                           style: TextStyle(
                               color: whiteColor.withOpacity(0.7), fontSize: 12),
                         ),
-                        const SizedBox(height: 20), // Padding bawah
+                        const SizedBox(height: 20),
                       ],
                     ),
                   ),
@@ -132,8 +115,6 @@ class LandingView extends StatelessWidget {
               ],
             ),
           ),
-
-          // --- BAGIAN 3: Ikon di Tengah Lengkungan ---
           Positioned(
             top: waveStartY - iconCircleRadius,
             left: (screenWidth / 2) - iconCircleRadius,
@@ -141,9 +122,9 @@ class LandingView extends StatelessWidget {
               width: iconCircleRadius * 2,
               height: iconCircleRadius * 2,
               decoration: BoxDecoration(
-                color: primaryPink, 
+                color: primaryPink,
                 shape: BoxShape.circle,
-                border: Border.all(color: whiteColor, width: 5), 
+                border: Border.all(color: whiteColor, width: 5),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.15),
@@ -153,9 +134,9 @@ class LandingView extends StatelessWidget {
                 ],
               ),
               child: Icon(
-                Icons.shopping_bag_rounded, // Ikon dari kode Anda
-                size: iconCircleRadius, // Ukuran ikon disesuaikan
-                color: lightPinkIcon, // Warna ikon pink muda
+                Icons.shopping_bag_rounded,
+                size: iconCircleRadius,
+                color: lightPinkIcon,
               ),
             ),
           ),
@@ -165,8 +146,6 @@ class LandingView extends StatelessWidget {
   }
 }
 
-// --- Class CustomClipper untuk membuat lengkungan ---
-// (Letakkan class ini di file yang sama, di luar class LandingView)
 class BottomWaveClipper extends CustomClipper<Path> {
   final double waveStartFraction;
   final double waveCurveHeight;
@@ -181,20 +160,16 @@ class BottomWaveClipper extends CustomClipper<Path> {
     var path = Path();
     final double waveStartY = size.height * waveStartFraction;
 
-    // Mulai dari kiri, di posisi Y awal lengkungan
     path.moveTo(0, waveStartY);
-
-    // Membuat lengkungan parabola sederhana
     path.quadraticBezierTo(
-      size.width / 2, // Titik kontrol X (tengah)
-      waveStartY + waveCurveHeight, // Titik kontrol Y (puncak lengkungan)
-      size.width, // Titik akhir X (kanan)
-      waveStartY, // Titik akhir Y (sama dengan awal)
+      size.width / 2,
+      waveStartY + waveCurveHeight,
+      size.width,
+      waveStartY,
     );
-
-    path.lineTo(size.width, size.height); // Garis ke pojok kanan bawah
-    path.lineTo(0, size.height); // Garis ke pojok kiri bawah
-    path.close(); // Tutup path
+    path.lineTo(size.width, size.height);
+    path.lineTo(0, size.height);
+    path.close();
 
     return path;
   }

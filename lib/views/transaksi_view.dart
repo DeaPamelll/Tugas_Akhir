@@ -1,4 +1,3 @@
-// lib/views/transaksi_view.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -20,7 +19,6 @@ class TransaksiView extends StatelessWidget {
     final trx = Get.find<TransaksiController>();
     final waktu = Get.find<KWaktuController>();
 
-    // Ambil ETA opsional dari arguments (kalau dikirim saat Checkout)
     DateTime? eta;
     final args = Get.arguments;
     if (args is Map && args['eta'] is String) {
@@ -33,7 +31,7 @@ class TransaksiView extends StatelessWidget {
       builder: (_) {
         final list = trx.items;
         return Scaffold(
-          backgroundColor: const Color(0xFFFFF8F0), // ivory lembut
+          backgroundColor: const Color(0xFFFFF8F0), 
           appBar: const HeaderWidget(title: 'Transaksi'),
           body: list.isEmpty
               ? const Center(child: Text('Belum ada transaksi'))
@@ -47,7 +45,7 @@ class TransaksiView extends StatelessWidget {
                       tx: t,
                       fmtMoney: _fmtMoney,
                       waktu: waktu,
-                      eta: eta, // tampilkan jika ada
+                      eta: eta, 
                     );
                   },
                 ),
@@ -76,15 +74,15 @@ class _TxCard extends StatelessWidget {
   Color _statusColor(String s) {
     final ss = s.toLowerCase();
     if (ss.contains('paid') || ss.contains('success')) {
-      return const Color(0xFF2E7D32); // hijau
+      return const Color(0xFF2E7D32); 
     }
     if (ss.contains('pending') || ss.contains('process')) {
-      return const Color(0xFFEF6C00); // oranye
+      return const Color(0xFFEF6C00); 
     }
     if (ss.contains('cancel') || ss.contains('failed')) {
-      return const Color(0xFFC62828); // merah
+      return const Color(0xFFC62828); 
     }
-    return Colors.black87; // default
+    return Colors.black87; 
   }
 
   @override
@@ -108,7 +106,7 @@ class _TxCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ===== Header: Status badge + tanggal =====
+  
           Row(
             children: [
               Container(
@@ -139,7 +137,7 @@ class _TxCard extends StatelessWidget {
 
           const SizedBox(height: 10),
 
-          // ===== Info pembayaran & ekspedisi =====
+      
           Row(
             children: [
               const Icon(Icons.payments_outlined, size: 18, color: Colors.black54),
@@ -164,7 +162,7 @@ class _TxCard extends StatelessWidget {
             ],
           ),
 
-          // ===== ETA (opsional) =====
+
           if (eta != null) ...[
             const SizedBox(height: 8),
             Row(
@@ -197,13 +195,13 @@ class _TxCard extends StatelessWidget {
 
           const SizedBox(height: 12),
 
-          // ===== Daftar item =====
+     
           ...tx.items.map((e) => Padding(
                 padding: const EdgeInsets.only(bottom: 6),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // bullet
+                    
                     Container(
                       width: 6,
                       height: 6,
@@ -214,7 +212,7 @@ class _TxCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    // judul produk
+                    
                     Expanded(
                       child: Text(
                         e.title,
@@ -224,7 +222,7 @@ class _TxCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    // qty
+                
                     Text(
                       'x${e.qty}',
                       style: const TextStyle(
@@ -238,15 +236,12 @@ class _TxCard extends StatelessWidget {
 
           const SizedBox(height: 10),
 
-          // ===== Divider halus =====
           Container(
             height: 1,
             color: Colors.black12.withOpacity(.10),
           ),
 
           const SizedBox(height: 10),
-
-          // ===== Total =====
           Row(
             children: [
               const Spacer(),

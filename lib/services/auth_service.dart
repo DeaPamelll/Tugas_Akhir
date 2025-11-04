@@ -6,15 +6,14 @@ import 'user_service.dart';
 
 class AuthService {
   final UserService _userService = UserService();
-  final Box _session = Hive.box('session'); // pastikan box 'session' dibuka di main.dart
+  final Box _session = Hive.box('session'); 
 
-  // Keys sesi
+  
   static const _kLoggedIn = 'is_logged_in_v1';
   static const _kUserId   = 'user_id_v1';
   static const _kEmail    = 'user_email_v1';
   static const _kName     = 'user_name_v1';
 
-  // =============== REGISTER ===============
   Future<String> registerUser({
     required String username,
     required String email,
@@ -33,8 +32,7 @@ class AuthService {
       );
 
       await _userService.saveUser(newUser);
-      // Kalau mau auto-login:
-      // await _persistSession(newUser);
+
 
       return "Success: Registrasi berhasil.";
     } catch (e) {
@@ -42,7 +40,6 @@ class AuthService {
     }
   }
 
-  // =============== LOGIN ===============
   Future<String> loginUser({
     required String email,
     required String password,
@@ -61,7 +58,6 @@ class AuthService {
     }
   }
 
-  // =============== LOGOUT ===============
   Future<void> logout() async {
     await _session.delete(_kLoggedIn);
     await _session.delete(_kUserId);
@@ -69,9 +65,8 @@ class AuthService {
     await _session.delete(_kName);
   }
 
-  // =============== SESSION HELPERS ===============
   Future<void> _persistSession(User user) async {
-    // Stabil per user tanpa perlu field id di model:
+  
     final int derivedId = _stableUserId(user.email);
 
     await _session.put(_kLoggedIn, true);
@@ -80,7 +75,6 @@ class AuthService {
     await _session.put(_kName, user.username ?? '');
   }
 
-  // Buat userId yang konsisten dari email (lowercase+trim untuk konsistensi)
   int _stableUserId(String email) => email.trim().toLowerCase().hashCode;
 
   Future<bool> isLoggedIn() async =>

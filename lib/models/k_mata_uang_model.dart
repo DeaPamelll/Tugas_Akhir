@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-/// Model kurs mata uang.
-/// Mendukung bentuk response v4 (rates) dan v6 (conversion_rates).
 class KMataUang {
   final String base;
   final Map<String, double> rates;

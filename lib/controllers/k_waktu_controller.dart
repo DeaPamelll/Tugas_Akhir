@@ -2,10 +2,11 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 
 class KWaktuController extends GetxController {
-  static const _boxName = 'prefs';        // box untuk simpan preferensi
-  static const _keyTz = 'timezone';       // key untuk simpan zona waktu
+  static const _boxName = 'prefs';       
+  static const _keyTz = 'timezone';     
 
-  final RxString selectedZone = 'WIB'.obs; // default
+  final RxString selectedZone = 'WIB'.obs; 
+  
 
   @override
   void onInit() {
@@ -27,7 +28,6 @@ class KWaktuController extends GetxController {
     update();
   }
 
-  /// Helper offset timezone
   Duration get offset {
     switch (selectedZone.value) {
       case 'WIB': return const Duration(hours: 7);
@@ -38,7 +38,6 @@ class KWaktuController extends GetxController {
     }
   }
 
-  /// Format waktu dari UTC ke zona yang dipilih
   String formatDate(DateTime utc) {
     final local = utc.toUtc().add(offset);
     return '${local.day.toString().padLeft(2, '0')}-'

@@ -81,7 +81,6 @@ class CartView extends StatelessWidget {
                   ),
                 ),
 
-                // ===== Daftar item =====
                 Expanded(
                   child: ListView.separated(
                     padding: const EdgeInsets.fromLTRB(12, 12, 12, 120),
@@ -105,13 +104,13 @@ class CartView extends StatelessWidget {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Checkbox per item
+    
                               Checkbox(
                                 value: checked,
                                 onChanged: (_) => cart.toggleSelect(it.id),
                               ),
 
-                              // Thumbnail
+
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(8),
                                 child: Image.network(
@@ -123,7 +122,6 @@ class CartView extends StatelessWidget {
                               ),
                               const SizedBox(width: 12),
 
-                              // Detail
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,7 +137,6 @@ class CartView extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 8),
 
-                                    // Baris qty
                                     Row(
                                       children: [
                                         _QtyBtn(icon: Icons.remove, onTap: () => cart.decrease(it.id)),
@@ -156,7 +153,6 @@ class CartView extends StatelessWidget {
 
                                     const SizedBox(height: 10),
 
-                                    // Harga satuan (dipindah ke bawah)
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
@@ -172,7 +168,7 @@ class CartView extends StatelessWidget {
 
                                     const SizedBox(height: 6),
 
-                                    // Subtotal (dengan warna tegas)
+    
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [

@@ -31,7 +31,6 @@ class HomeView extends StatelessWidget {
       backgroundColor: ivory,
       appBar: const HeaderWidget(),
       body: Obx(() {
-        // Loader hanya saat BOOT pertama
         if (pc.isBoot.value) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -40,7 +39,6 @@ class HomeView extends StatelessWidget {
           onRefresh: pc.init,
           child: CustomScrollView(
             slivers: [
-              // ============ Search ============
               SliverToBoxAdapter(
                 child: Container(
                   decoration: const BoxDecoration(
@@ -85,14 +83,12 @@ class HomeView extends StatelessWidget {
                 ),
               ),
 
-              // ============ Kategori (chips) ============
                   SliverToBoxAdapter(
                   child: SizedBox(
                     height: 96,
                     child: Obx(() {
                       final cats = pc.categories;
 
-                      // >>> PENTING: baca selectedCategory di sini supaya Obx subscribe <<<
                       final sel = pc.selectedCategory.value;
 
                       if (cats.isEmpty) {
@@ -105,7 +101,7 @@ class HomeView extends StatelessWidget {
                       }
 
                       String? catSlug(dynamic c) {
-                        if (c == '_ALL_') return null; // sentinel "Semua"
+                        if (c == '_ALL_') return null; 
                         if (c is Map) return (c['slug'] ?? c['name'] ?? '').toString().toLowerCase();
                         return c.toString().toLowerCase();
                       }
@@ -122,7 +118,7 @@ class HomeView extends StatelessWidget {
                           final label = raw == '_ALL_' ? 'Semua' : catLabel(raw);
                           final slug  = catSlug(raw);
 
-                          // pakai 'sel' yang sudah dibaca di atas
+    
                           final selected = (slug == null && sel == null) || (slug != null && sel == slug);
 
                           return SizedBox(
@@ -132,9 +128,9 @@ class HomeView extends StatelessWidget {
                               icon: iconForCategory(label),
                               selected: selected,
                               onTap: () {
-                                pc.pickCategory(slug);   // update kategori
-                                _search.clear();         // kosongkan pencarian
-                                pc.onQueryChanged('');   // biar hasil kembali ke kategori aktif
+                                pc.pickCategory(slug);   
+                                _search.clear();         
+                                pc.onQueryChanged('');   
                               },
                             ),
                           );
@@ -145,11 +141,9 @@ class HomeView extends StatelessWidget {
                 ),
 
 
-              // ============ Grid Produk ============
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
                 sliver: Obx(() {
-                  // Tampilkan grid selalu; saat ganti kategori, tampilkan overlay loader ringan
                   final grid = SliverGrid(
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
@@ -178,18 +172,16 @@ class HomeView extends StatelessWidget {
                     ),
                   );
 
-                  // Bungkus dengan Stack via SliverToBoxAdapter agar bisa overlay loader
+    
                   return SliverToBoxAdapter(
                     child: Stack(
                       children: [
-                        // Grid di dalam layout normal
                         CustomScrollView(
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           slivers: [grid],
                         ),
 
-                        // Overlay tipis saat isCatLoading
                         if (pc.isCatLoading.value)
                           Positioned.fill(
                             child: Container(

@@ -6,11 +6,10 @@ class KMataUangController extends GetxController {
   KMataUangController(this.service);
 
   final rates = <String, double>{}.obs;
-  final selected = 'USD'.obs;       // pilihan user
+  final selected = 'USD'.obs;       
   final loading = true.obs;
   final error = RxnString();
 
-  // hanya 4 kode (sesuai permintaanmu)
   final allowed = const ['USD', 'IDR', 'EUR', 'JPY'];
 
   @override
@@ -23,7 +22,7 @@ class KMataUangController extends GetxController {
     try {
       loading.value = true;
       error.value = null;
-      final r = await service.fetchRates();  // <-- pakai fetchRates()
+      final r = await service.fetchRates(); 
       rates.assignAll(r);
 
       if (!allowed.contains(selected.value)) selected.value = 'USD';
@@ -34,7 +33,6 @@ class KMataUangController extends GetxController {
     }
   }
 
-  /// Karena base = USD, faktor USD -> code = rates[code] (kalau null => 1.0)
   double factorFromUsdTo(String code) => rates[code] ?? 1.0;
 
   List<String> dropdownCodes() =>

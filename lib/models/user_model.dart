@@ -1,8 +1,8 @@
 import 'package:hive/hive.dart';
 
-part 'user_model.g.dart'; // File ini akan digenerate
+part 'user_model.g.dart'; 
 
-@HiveType(typeId: 0) // typeId harus unik
+@HiveType(typeId: 0) 
 class User extends HiveObject {
   @HiveField(0)
   String username;
@@ -11,7 +11,7 @@ class User extends HiveObject {
   String email;
 
   @HiveField(2)
-  String password; // Ini akan berisi password yang SUDAH di-hash
+  String password; 
 
   @HiveField(3)
   DateTime createdAt;

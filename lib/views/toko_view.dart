@@ -65,7 +65,6 @@ class _TokoViewState extends State<TokoView> {
         _loading = false;
       });
 
-      // ⬇️ Pertama kali: fokus ke LOKASI KAMU (bukan toko terdekat)
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _moveCameraToUser();
       });
@@ -99,7 +98,6 @@ class _TokoViewState extends State<TokoView> {
     final userLatLng =
         LatLng(_userPos?.latitude ?? -7.77, _userPos?.longitude ?? 110.39);
 
-    // Marker: user + 2 toko terdekat (total 3 simbol)
     final markers = <Marker>[
       if (_userPos != null)
         Marker(
@@ -128,7 +126,7 @@ class _TokoViewState extends State<TokoView> {
                     FlutterMap(
                       mapController: _mapController,
                       options: MapOptions(
-                        initialCenter: userLatLng, // fallback awal
+                        initialCenter: userLatLng, 
                         initialZoom: 13,
                         interactionOptions: const InteractionOptions(
                           flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
@@ -144,7 +142,7 @@ class _TokoViewState extends State<TokoView> {
                       ],
                     ),
 
-                    // Panel bawah: 2 cabang terdekat + tombol "Lokasi Saya"
+               
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: Container(
@@ -186,7 +184,7 @@ class _TokoViewState extends State<TokoView> {
                                   title: Text(s.name, maxLines: 1, overflow: TextOverflow.ellipsis),
                                   subtitle: Text('${s.address}\n$dKm km dari Anda'),
                                   isThreeLine: true,
-                                  onTap: () => _moveCameraToStore(s), // fokus ke toko saat di-tap
+                                  onTap: () => _moveCameraToStore(s), 
                                 );
                               }),
                             const SizedBox(height: 10),
@@ -198,7 +196,7 @@ class _TokoViewState extends State<TokoView> {
                                 ),
                                 padding: const EdgeInsets.symmetric(vertical: 12),
                               ),
-                              onPressed: _initLocation, // refresh + fokus ke user
+                              onPressed: _initLocation, 
                               icon: const Icon(Icons.my_location, color: Colors.white),
                               label: const Text(
                                 'Lokasi Saya',

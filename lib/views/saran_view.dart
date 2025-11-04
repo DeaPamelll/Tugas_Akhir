@@ -60,11 +60,10 @@ class SaranView extends StatelessWidget {
               ),
               SizedBox(height: 6),
               Text(
-                'Selama mengikuti perkuliahan Mobile Development, saya merasa sangat senang '
-                'karena mendapatkan banyak pengetahuan baru tentang bagaimana membangun aplikasi '
+                'Selama mengikuti perkuliahan Mobile , saya merasa sangat senang '
+                'karena mendapatkan banyak pengetahuan  tentang bagaimana membangun aplikasi '
                 'mobile secara langsung menggunakan Flutter. Setiap pertemuan memberikan pengalaman '
-                'praktis yang membuat saya semakin tertarik dan termotivasi untuk mendalami dunia '
-                'pengembangan aplikasi mobile.',
+                ' yang membuat saya semakin semangat untuk mengerjakan adar cepat selesai hehe ',
                 textAlign: TextAlign.justify,
                 style: TextStyle(height: 1.6, fontSize: 14.5),
               ),
@@ -79,10 +78,8 @@ class SaranView extends StatelessWidget {
               ),
               SizedBox(height: 6),
               Text(
-                'Semoga ke depannya mata kuliah Mobile Development dapat terus dikembangkan '
-                'dengan proyek-proyek yang lebih menantang dan interaktif. Terima kasih kepada '
-                'dosen yang telah sabar membimbing, memberikan materi yang menarik, dan membantu '
-                'mahasiswa memahami konsep dengan cara yang mudah dan menyenangkan.',
+                'Semoga ke depannya mata kuliah Mobile dapat terus dikembangkan '
+                'dengan proyek-proyek yang lebih menantang, dengan UTS dan UAS 100 soal  ',
                 textAlign: TextAlign.justify,
                 style: TextStyle(height: 1.6, fontSize: 14.5),
               ),

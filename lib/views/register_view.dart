@@ -13,10 +13,10 @@ class RegisterView extends StatefulWidget {
 class _RegisterViewState extends State<RegisterView> {
   final RegisterController controller = Get.put(RegisterController());
 
-  // Palette senada LoginView
-  static const Color primaryPink = Color(0xFFE8A0BF); // aksen utama
-  static const Color lightPinkBG = Color(0xFFFFF8F9); // fill input
-  static const Color ivory       = Color(0xFFFFF8F0); // canvas belakang
+
+  static const Color primaryPink = Color(0xFFE8A0BF); 
+  static const Color lightPinkBG = Color(0xFFFFF8F9); 
+  static const Color ivory       = Color(0xFFFFF8F0); 
   static const Color whiteColor  = Colors.white;
 
   @override
@@ -28,7 +28,7 @@ class _RegisterViewState extends State<RegisterView> {
       backgroundColor: ivory,
       body: Stack(
         children: [
-          // ---- Background gradient lembut ----
+      
           Positioned.fill(
             child: DecoratedBox(
               decoration: const BoxDecoration(
@@ -36,15 +36,15 @@ class _RegisterViewState extends State<RegisterView> {
                   begin: Alignment(0, -1),
                   end: Alignment(0, 0.5),
                   colors: [
-                    Color(0xFFFFF0F6), // pink very soft
-                    Color(0x00FFF0F6), // fade transparan
+                    Color(0xFFFFF0F6), 
+                    Color(0x00FFF0F6), 
                   ],
                 ),
               ),
             ),
           ),
 
-          // ---- aksesoris lingkaran blur (subtle) ----
+
           Positioned(
             top: -30,
             right: -20,
@@ -56,14 +56,14 @@ class _RegisterViewState extends State<RegisterView> {
             child: _Bubble(color: primaryPink.withOpacity(.12), size: 110),
           ),
 
-          // ---- konten ----
+  
           SafeArea(
             child: SingleChildScrollView(
               padding: EdgeInsets.fromLTRB(24, 24, 24, kb + 24),
               child: Center(
                 child: Column(
                   children: [
-                    // Logo/ikon
+   
                     Container(
                       width: 90,
                       height: 90,
@@ -102,7 +102,7 @@ class _RegisterViewState extends State<RegisterView> {
 
                     const SizedBox(height: 20),
 
-                    // ---- Glass card form ----
+
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.fromLTRB(18, 18, 18, 20),
@@ -162,7 +162,7 @@ class _RegisterViewState extends State<RegisterView> {
 
                             const SizedBox(height: 10),
 
-                            // tombol daftar
+         
                             Obx(() {
                               return controller.isLoading.value
                                   ? const Padding(
@@ -200,7 +200,7 @@ class _RegisterViewState extends State<RegisterView> {
 
                     const SizedBox(height: 18),
 
-                    // divider "atau"
+        
                     Row(
                       children: [
                         Expanded(child: Container(height: 1, color: Colors.black.withOpacity(.08))),
@@ -217,7 +217,7 @@ class _RegisterViewState extends State<RegisterView> {
 
                     const SizedBox(height: 14),
 
-                    // tombol ke login
+     
                     TextButton(
                       onPressed: () => Get.off(() => const LoginView()),
                       style: TextButton.styleFrom(

@@ -6,10 +6,10 @@ import '../services/auth_service.dart';
 
 class CartController extends GetxController {
   final RxnInt _userId = RxnInt();
-  Box<CartItem>? _box; // box aktif untuk user sekarang
+  Box<CartItem>? _box; 
 
   
-  final Set<int> _selectedIds = {}; // simpan ID product yg dipilih
+  final Set<int> _selectedIds = {}; 
 
   bool isSelected(int id) => _selectedIds.contains(id);
 
@@ -44,7 +44,7 @@ class CartController extends GetxController {
   double get selectedTotal =>
       selectedItems.fold(0.0, (a, e) => a + e.subTotal);
 
-  /// Dipanggil setelah bayar → hapus item terpilih dari BOX
+  
   void removeSelected() {
     final box = _box;
     if (box == null) return;
@@ -55,12 +55,12 @@ class CartController extends GetxController {
     update();
   }
 
-  // ---------- Helper aman null ----------
+  
   Iterable<CartItem> get _vals => _box?.values ?? <CartItem>[];
 
-  // ---------- Computed / getters ----------
-  int get distinctCount => _box?.length ?? 0;                    // item unik → badge
-  int get totalQty      => _vals.fold(0,   (a, e) => a + e.qty); // total kuantitas
+  
+  int get distinctCount => _box?.length ?? 0;                    
+  int get totalQty      => _vals.fold(0,   (a, e) => a + e.qty); 
   double get total      => _vals.fold(0.0, (a, e) => a + e.subTotal);
   Iterable<CartItem> get items => _vals;
 
@@ -75,22 +75,21 @@ class CartController extends GetxController {
     try {
       uid = await AuthService().currentUserId();
     } catch (_) {
-      uid = null; // guest
+      uid = null; 
     }
     await setActiveUser(uid);
   }
 
   String _boxNameFor(int? userId) => 'cart_${userId?.toString() ?? 'guest'}';
 
-  /// panggil saat login/logout untuk pindah cart
   Future<void> setActiveUser(int? userId) async {
     if (_box?.isOpen == true) await _box!.close();
     _userId.value = userId;
     _box = await Hive.openBox<CartItem>(_boxNameFor(userId));
-    update(); // trigger GetBuilder rebuild (Header badge, CartView, Footer)
+    update(); 
   }
 
-  // ---------- Actions ----------
+  
   void add(Product p, {int qty = 1}) {
     final box = _box;
     if (box == null) return;
@@ -102,7 +101,6 @@ class CartController extends GetxController {
         CartItem(
           id: p.id,
           title: p.title,
-          // pastikan ke double walau p.price bisa num/int
           price: (p.price is num)
               ? (p.price as num).toDouble()
               : double.tryParse('${p.price}') ?? 0.0,
@@ -137,7 +135,7 @@ class CartController extends GetxController {
       box.put(productId, cur);
     } else {
       box.delete(productId);
-      _selectedIds.remove(productId); // kalau dihapus, unselect juga
+      _selectedIds.remove(productId); 
     }
     update();
   }

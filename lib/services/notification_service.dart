@@ -31,7 +31,6 @@ class NotificationService {
       priority: Priority.high,
       importance: Importance.high,
     );
-    const ios = DarwinNotificationDetails();
 
     final details = NotificationDetails(android: android);
     await _plugin.show(DateTime.now().millisecondsSinceEpoch ~/ 1000, title, body, details);

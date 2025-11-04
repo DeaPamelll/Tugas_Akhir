@@ -1,12 +1,12 @@
 import 'package:hive/hive.dart';
 
-part 'order_item.g.dart'; // kalau tidak mau build_runner, hapus baris ini & pakai adapter manual di bawah
+part 'order_item.g.dart'; 
 
 @HiveType(typeId: 21)
 class OrderItem extends HiveObject {
-  @HiveField(0) int id;           // product id
+  @HiveField(0) int id;        
   @HiveField(1) String title;
-  @HiveField(2) double price;     // base: USD
+  @HiveField(2) double price;    
   @HiveField(3) String thumbnail;
   @HiveField(4) int qty;
 
