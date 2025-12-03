@@ -5,8 +5,8 @@ import '../models/user_model.dart';
 import 'user_service.dart';
 
 class AdminUser {
-  final String email = "admin@email.com"; 
-  final String password = "adminpassword123"; 
+  final String email = "admin@gmail.com"; 
+  final String password = "admin123"; 
   final String username = "Administrator";
   final int id = -1;
   final String role = 'admin';
@@ -140,7 +140,7 @@ class AuthService {
 
     if (id == null || email == null) return null;
 
-    // Jika admin
+
     if (role == 'admin' && id == _admin.id) {
       return User(
         id: _admin.id,

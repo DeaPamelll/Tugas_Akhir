@@ -16,18 +16,15 @@ class AdminTransaksiController extends GetxController {
     update();
   }
 
-  /// Semua transaksi untuk admin
   List<TransactionModel> get allTransactions {
     return _box.values.toList()
       ..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   }
 
-  /// Pendapatan total
   double get totalIncome {
     return _box.values.fold(0.0, (sum, tx) => sum + tx.total);
   }
 
-  /// Data grafik per bulan (total pendapatan)
   Map<String, double> get monthlyIncome {
     final Map<String, double> data = {};
 
@@ -39,7 +36,7 @@ class AdminTransaksiController extends GetxController {
     return data;
   }
 
-  /// Update status transaksi
+
   Future<void> updateStatus(int id, String status) async {
     final tx = _box.values.firstWhere((e) => e.id == id);
 

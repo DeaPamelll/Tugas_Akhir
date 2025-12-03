@@ -212,9 +212,6 @@ class _EditProfileViewState extends State<EditProfileView> {
     );
   }
 
-  // ======================
-  // WIDGET: PROFILE IMAGE
-  // ======================
 
   Widget _buildProfileImage(user) {
     ImageProvider? imageProvider;

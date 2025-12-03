@@ -22,12 +22,13 @@ class SettingView extends StatelessWidget {
 
   final AuthService _auth = AuthService();
 
-  /// Ambil user lengkap dari session + database Hive
-  Future<User?> _loadUser() async {
+  final Rx<User?> userRx = Rx<User?>(null);
+
+  Future<void> _loadUser() async {
     try {
-      return await _auth.getCurrentUser();
+      userRx.value = await _auth.getCurrentUser();
     } catch (_) {
-      return null;
+      userRx.value = null;
     }
   }
 
@@ -69,17 +70,16 @@ class SettingView extends StatelessWidget {
   Widget build(BuildContext context) {
     final waktu = Get.find<KWaktuController>();
 
+    _loadUser();
+
     return Scaffold(
       backgroundColor: page,
       appBar: const HeaderWidget(title: 'Setting'),
       bottomNavigationBar: const FooterWidget(currentIndex: 2),
-
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // ============================
-          // CARD PROFIL ATAS
-          // ============================
+
           Container(
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(16, 22, 16, 22),
@@ -96,48 +96,45 @@ class SettingView extends StatelessWidget {
               ],
             ),
 
-            child: FutureBuilder<User?>(
-              future: _loadUser(),
-              builder: (context, snap) {
-                final user = snap.data;
+            child: Obx(() {
+              final user = userRx.value;
 
-                final String? photo = user?.photoPath;
-                final String email = user?.email ?? "email@pengguna.com";
+              final String? photo = user?.photoPath;
+              final String email = user?.email ?? "email@pengguna.com";
 
-                return Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundColor: rose.withOpacity(.15),
+              return Column(
+                children: [
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundColor: rose.withOpacity(.15),
 
-                      backgroundImage: (photo != null && photo.isNotEmpty)
-                          ? FileImage(File(photo))
-                          : null,
+                    backgroundImage: (photo != null && photo.isNotEmpty)
+                        ? FileImage(File(photo))
+                        : null,
 
-                      child: (photo == null || photo.isEmpty)
-                          ? const Icon(
-                              Icons.person_rounded,
-                              size: 80,
-                              color: rose,
-                            )
-                          : null,
+                    child: (photo == null || photo.isEmpty)
+                        ? const Icon(
+                            Icons.person_rounded,
+                            size: 80,
+                            color: rose,
+                          )
+                        : null,
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  Text(
+                    email,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 16,
+                      color: Colors.black87,
                     ),
-
-                    const SizedBox(height: 10),
-
-                    Text(
-                      email,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 16,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
+                  ),
+                ],
+              );
+            }),
           ),
 
           const SizedBox(height: 18),
@@ -147,10 +144,16 @@ class SettingView extends StatelessWidget {
           ),
           const SizedBox(height: 10),
 
+
           _PlainTile(
             icon: Icons.person_outline,
             title: 'Detail Profil',
-            onTap: () => Get.to(() => const ProfileView()),
+            onTap: () async {
+              await Get.to(() => const ProfileView());
+
+
+              await _loadUser();
+            },
           ),
           _PlainTile(
             icon: Icons.storefront_outlined,
@@ -165,9 +168,6 @@ class SettingView extends StatelessWidget {
 
           const SizedBox(height: 20),
 
-          // ============================
-          // ZONA WAKTU
-          // ============================
           const Text(
             'Zona Waktu',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
@@ -221,9 +221,7 @@ class SettingView extends StatelessWidget {
 
           const SizedBox(height: 24),
 
-          // ============================
-          // LOGOUT
-          // ============================
+
           ElevatedButton.icon(
             onPressed: () => _logout(context),
             icon: const Icon(Icons.logout),

@@ -193,6 +193,17 @@ class _CheckoutViewState extends State<CheckoutView> {
               ),
               onPressed: () async {
                 try {
+                  if (payment.isEmpty) {
+                    Get.snackbar(
+                      'Metode Pembayaran',
+                      'Silakan pilih metode pembayaran terlebih dahulu.',
+                      snackPosition: SnackPosition.BOTTOM,
+                      backgroundColor: Colors.redAccent.withOpacity(.9),
+                      colorText: Colors.white,
+                    );
+                    return;
+                  }
+
                   final confirmed = await showDialog<bool>(
                     context: context,
                     builder: (_) => AlertDialog(

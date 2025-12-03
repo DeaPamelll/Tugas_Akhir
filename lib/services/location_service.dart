@@ -15,7 +15,6 @@ class Store {
 }
 
 class StoreService {
-  // Sementara koordinat mirota dl 
   static const List<Store> stores = [
     Store(
       name: "D'Shop – Toko 1",

@@ -59,7 +59,6 @@ class ProfileController extends GetxController {
     return true;
   }
 
-  /// ---------------- DELETE ACCOUNT ----------------
   Future<void> deleteAccount() async {
     final email = await authService.currentEmail();
     if (email == null) return;
@@ -67,10 +66,9 @@ class ProfileController extends GetxController {
     await userService.deleteUser(email);
     await authService.logout();
 
-    Get.offAllNamed('/'); // arahkan ulang ke halaman awal
+    Get.offAllNamed('/'); 
   }
 
-  /// ---------------- IMAGE PICKER ----------------
   Future<String?> pickImageGallery() async {
     final picked = await picker.pickImage(source: ImageSource.gallery);
     return picked?.path;

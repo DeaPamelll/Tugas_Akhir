@@ -185,7 +185,7 @@ class CartView extends StatelessWidget {
                                 ),
                               ),
 
-                              // Tombol hapus
+                            
                               IconButton(
                                 onPressed: () => cart.remove(it.id),
                                 icon: const Icon(Icons.delete_outline),
@@ -202,7 +202,6 @@ class CartView extends StatelessWidget {
           },
         ),
 
-        // ===== Bottom bar =====
         bottomNavigationBar: GetBuilder<CartController>(
           builder: (_) {
             final totalUsdSel = cart.selectedTotal;

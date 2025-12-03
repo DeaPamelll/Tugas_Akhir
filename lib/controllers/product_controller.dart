@@ -1,4 +1,3 @@
-// lib/controllers/product_controller.dart
 import 'package:get/get.dart';
 import '../models/product.dart';
 import '../services/api_service.dart';

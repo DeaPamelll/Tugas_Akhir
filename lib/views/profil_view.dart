@@ -50,9 +50,6 @@ class ProfileView extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
             child: Column(
               children: [
-                // ================================
-                // FOTO PROFIL
-                // ================================
                 GestureDetector(
                   onTap: controller.openEditProfileView,
                   child: Container(
@@ -96,9 +93,6 @@ class ProfileView extends StatelessWidget {
 
                 const SizedBox(height: 14),
 
-                // ================================
-                // USERNAME
-                // ================================
                 Text(
                   user.username,
                   textAlign: TextAlign.center,
@@ -112,9 +106,6 @@ class ProfileView extends StatelessWidget {
 
                 const SizedBox(height: 6),
 
-                // ================================
-                // EMAIL
-                // ================================
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
@@ -130,9 +121,6 @@ class ProfileView extends StatelessWidget {
 
                 const SizedBox(height: 14),
 
-                // ================================
-                // HOBBY
-                // ================================
                 _ThinCard(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,9 +134,6 @@ class ProfileView extends StatelessWidget {
 
                 const SizedBox(height: 20),
 
-                // ================================
-                // TOMBOL EDIT PROFIL
-                // ================================
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: rose,
@@ -170,9 +155,6 @@ class ProfileView extends StatelessWidget {
 
                 const SizedBox(height: 12),
 
-                // ================================
-                // TOMBOL HAPUS AKUN (dengan konfirmasi)
-                // ================================
                 TextButton(
                   onPressed: () => showDeleteConfirmation(context, controller),
                   child: const Text(
@@ -191,9 +173,6 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  // =======================================================
-  // KONFIRMASI HAPUS AKUN
-  // =======================================================
   void showDeleteConfirmation(BuildContext context, ProfileController c) {
     showDialog(
       context: context,

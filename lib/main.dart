@@ -4,19 +4,17 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tugas_akhir/views/edit_profile_view.dart';
 import 'package:tugas_akhir/views/landing_view.dart';
-
+import 'package:tugas_akhir/views/login_view.dart';
 import 'controllers/cart_controller.dart';
 import 'controllers/k_mata_uang_controller.dart';
 import 'controllers/transaksi_controller.dart';
 import 'controllers/k_waktu_controller.dart';
 import 'services/k_mata_uang_service.dart';
 import 'services/notification_service.dart';
-
 import 'models/user_model.dart';
 import 'models/cart_item.dart';
 import 'models/product.dart';
 import 'models/transaction_model.dart';
-
 import 'views/transaksi_view.dart';
 import 'views/checkout_view.dart';
 
@@ -39,17 +37,16 @@ Future<void> main() async {
     Hive.registerAdapter(TransactionModelAdapter());
   }
 
-  /// OPEN BOXES (SEMUA DATA APP)
+  
   await Hive.openBox('session');                        
   await Hive.openBox<User>('users');                   
   await Hive.openBox<CartItem>('cart_guest');          
   await Hive.openBox<TransactionModel>('transactions');
   await Hive.openBox('prefs');                         
 
-  /// NOTIFICATION INIT
+
   await NotificationService.initialize();
 
-  /// REGISTER CONTROLLERS (GetX)
   if (!Get.isRegistered<KMataUangController>()) {
     Get.put(KMataUangController(KMataUangService()), permanent: true);
   }
@@ -68,6 +65,7 @@ Future<void> main() async {
     title: "D'Verse",
     home: LandingView(),
     getPages: [
+      GetPage(name: '/login', page: () => LoginView()),
       GetPage(name: '/transaksi', page: () => const TransaksiView()),
       GetPage(name: '/checkout', page: () => const CheckoutView()),
       GetPage(name: '/edit-profile', page: () => const EditProfileView()),
