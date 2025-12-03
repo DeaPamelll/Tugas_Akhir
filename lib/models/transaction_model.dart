@@ -2,6 +2,8 @@ import 'package:hive/hive.dart';
 
 import 'cart_item.dart';
 
+part 'transaction_model.g.dart'; 
+
 @HiveType(typeId: 40)
 class TransactionModel extends HiveObject {
   @HiveField(0)

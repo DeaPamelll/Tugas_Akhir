@@ -33,7 +33,7 @@ class FooterWidget extends StatelessWidget {
                 Get.offAll(() => const TransaksiView());
                 break;
               case 2:
-                Get.offAll(() => const SettingView());
+                Get.offAll(() => SettingView());
                 break;
             }
           },

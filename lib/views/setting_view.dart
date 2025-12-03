@@ -1,40 +1,47 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tugas_akhir/models/user_model.dart';
 
 import 'package:tugas_akhir/views/profil_view.dart';
 import 'widgets/header_widget.dart';
 import 'widgets/footer_widget.dart';
 import '../services/auth_service.dart';
 import '../controllers/k_waktu_controller.dart';
+
 import 'login_view.dart';
 import 'toko_view.dart';
 import 'saran_view.dart';
 
 class SettingView extends StatelessWidget {
-  const SettingView({super.key});
+  SettingView({super.key});
 
   static const rose = Color(0xFFE8A0BF);
   static final page = Colors.grey.shade50;
   static const card = Colors.white;
 
-  Future<String?> _loadEmail() async {
+  final AuthService _auth = AuthService();
+
+  /// Ambil user lengkap dari session + database Hive
+  Future<User?> _loadUser() async {
     try {
-      return await AuthService().currentEmail(); 
+      return await _auth.getCurrentUser();
     } catch (_) {
       return null;
     }
   }
 
   Future<void> _logout(BuildContext context) async {
-    final auth = AuthService();
-
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Konfirmasi Logout'),
         content: const Text('Apakah Anda yakin ingin keluar dari akun ini?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Batal')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Batal'),
+          ),
           ElevatedButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
@@ -46,7 +53,7 @@ class SettingView extends StatelessWidget {
 
     if (confirm != true) return;
 
-    await auth.logout();
+    await _auth.logout();
 
     Get.snackbar(
       'Logout Berhasil',
@@ -66,10 +73,13 @@ class SettingView extends StatelessWidget {
       backgroundColor: page,
       appBar: const HeaderWidget(title: 'Setting'),
       bottomNavigationBar: const FooterWidget(currentIndex: 2),
+
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-  
+          // ============================
+          // CARD PROFIL ATAS
+          // ============================
           Container(
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(16, 22, 16, 22),
@@ -85,30 +95,48 @@ class SettingView extends StatelessWidget {
                 ),
               ],
             ),
-            child: Column(
-              children: [
-                CircleAvatar(
-                  radius: 50,
-                  backgroundColor: rose.withOpacity(.15),
-                  child: const Icon(Icons.person_rounded, size: 80, color: rose),
-                ),
-                const SizedBox(height: 10),
-                FutureBuilder<String?>(
-                  future: _loadEmail(),
-                  builder: (context, snap) {
-                    final email = snap.data;
-                    return Text(
-                      email?.isNotEmpty == true ? email! : 'email@pengguna.com',
+
+            child: FutureBuilder<User?>(
+              future: _loadUser(),
+              builder: (context, snap) {
+                final user = snap.data;
+
+                final String? photo = user?.photoPath;
+                final String email = user?.email ?? "email@pengguna.com";
+
+                return Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundColor: rose.withOpacity(.15),
+
+                      backgroundImage: (photo != null && photo.isNotEmpty)
+                          ? FileImage(File(photo))
+                          : null,
+
+                      child: (photo == null || photo.isEmpty)
+                          ? const Icon(
+                              Icons.person_rounded,
+                              size: 80,
+                              color: rose,
+                            )
+                          : null,
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    Text(
+                      email,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontWeight: FontWeight.w800,
                         fontSize: 16,
                         color: Colors.black87,
                       ),
-                    );
-                  },
-                ),
-              ],
+                    ),
+                  ],
+                );
+              },
             ),
           ),
 
@@ -121,7 +149,7 @@ class SettingView extends StatelessWidget {
 
           _PlainTile(
             icon: Icons.person_outline,
-            title: 'Profil Admin',
+            title: 'Detail Profil',
             onTap: () => Get.to(() => const ProfileView()),
           ),
           _PlainTile(
@@ -137,12 +165,15 @@ class SettingView extends StatelessWidget {
 
           const SizedBox(height: 20),
 
-
+          // ============================
+          // ZONA WAKTU
+          // ============================
           const Text(
             'Zona Waktu',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 8),
+
           Obx(() {
             final nowPreview = waktu.formatDate(DateTime.now());
             return Container(
@@ -156,7 +187,12 @@ class SettingView extends StatelessWidget {
                 children: [
                   const Icon(Icons.access_time, color: rose),
                   const SizedBox(width: 10),
-                  const Text('Zona: ', style: TextStyle(fontWeight: FontWeight.w600)),
+
+                  const Text(
+                    'Zona: ',
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                  ),
+
                   DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
                       value: waktu.selectedZone.value,
@@ -171,8 +207,13 @@ class SettingView extends StatelessWidget {
                       },
                     ),
                   ),
+
                   const Spacer(),
-                  Text(nowPreview, style: const TextStyle(fontWeight: FontWeight.w600)),
+
+                  Text(
+                    nowPreview,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
                 ],
               ),
             );
@@ -180,7 +221,9 @@ class SettingView extends StatelessWidget {
 
           const SizedBox(height: 24),
 
-   
+          // ============================
+          // LOGOUT
+          // ============================
           ElevatedButton.icon(
             onPressed: () => _logout(context),
             icon: const Icon(Icons.logout),
@@ -189,8 +232,13 @@ class SettingView extends StatelessWidget {
               backgroundColor: Colors.redAccent,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 14),
-              textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              textStyle: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
           ),
         ],

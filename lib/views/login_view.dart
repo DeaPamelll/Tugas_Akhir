@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../controllers/login_controller.dart';
 import 'register_view.dart';
 
@@ -20,8 +21,7 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    final mq = MediaQuery.of(context);
-    final kb = mq.viewInsets.bottom;
+    final kb = MediaQuery.of(context).viewInsets.bottom;
 
     return Scaffold(
       backgroundColor: ivory,
@@ -41,166 +41,197 @@ class _LoginViewState extends State<LoginView> {
               ),
             ),
           ),
-          Positioned(
+
+          const Positioned(
             top: -30,
             right: -20,
-            child: _Bubble(color: primaryPink.withOpacity(.18), size: 140),
+            child: _Bubble(color: Color(0x2DE8A0BF), size: 140),
           ),
-          Positioned(
+          const Positioned(
             top: 90,
             left: -30,
-            child: _Bubble(color: primaryPink.withOpacity(.12), size: 110),
+            child: _Bubble(color: Color(0x1FE8A0BF), size: 110),
           ),
+
           SafeArea(
             child: SingleChildScrollView(
               padding: EdgeInsets.fromLTRB(24, 50, 24, kb + 24),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 40),
-                    Container(
-                      width: 96,
-                      height: 96,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: whiteColor,
-                        boxShadow: [
-                          BoxShadow(
-                            color: primaryPink.withOpacity(.25),
-                            blurRadius: 18,
-                            offset: const Offset(0, 10),
-                          ),
-                        ],
-                        border: Border.all(color: primaryPink.withOpacity(.35), width: 2),
-                      ),
-                      child: const Icon(Icons.shopping_bag_rounded, size: 46, color: primaryPink),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      "Selamat Datang ",
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.black.withOpacity(.85),
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      "Masuk untuk melanjutkan belanja",
-                      style: TextStyle(
-                        color: Colors.black.withOpacity(.55),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.fromLTRB(18, 18, 18, 20),
-                      decoration: BoxDecoration(
-                        color: whiteColor.withOpacity(.78),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: primaryPink.withOpacity(.15)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(.04),
-                            blurRadius: 24,
-                            offset: const Offset(0, 10),
-                          ),
-                        ],
-                        backgroundBlendMode: BlendMode.softLight,
-                      ),
-                      child: Form(
-                        key: controller.formKey,
-                        child: Column(
-                          children: [
-                            _Input(
-                              controller: controller.emailController,
-                              label: 'Email',
-                              hint: 'nama@email.com',
-                              icon: Icons.email_rounded,
-                            ),
-                            const SizedBox(height: 14),
-                            Obx(() => _Input(
-                                  controller: controller.passwordController,
-                                  label: 'Password',
-                                  hint: '••••••••',
-                                  icon: Icons.lock_rounded,
-                                  obscure: !controller.isPasswordVisible.value,
-                                  suffix: IconButton(
-                                    icon: Icon(
-                                      controller.isPasswordVisible.value
-                                          ? Icons.visibility_rounded
-                                          : Icons.visibility_off_rounded,
-                                      color: primaryPink,
-                                    ),
-                                    onPressed: controller.togglePasswordVisibility,
-                                  ),
-                                )),
-                            const SizedBox(height: 10),
-                            Obx(() {
-                              return controller.isLoading.value
-                                  ? const Padding(
-                                      padding: EdgeInsets.symmetric(vertical: 8),
-                                      child: CircularProgressIndicator(color: primaryPink),
-                                    )
-                                  : SizedBox(
-                                      width: double.infinity,
-                                      height: 50,
-                                      child: ElevatedButton(
-                                        onPressed: controller.doLogin,
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: primaryPink,
-                                          foregroundColor: whiteColor,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(14),
-                                          ),
-                                          elevation: 2.5,
-                                          shadowColor: primaryPink.withOpacity(.35),
-                                        ),
-                                        child: const Text(
-                                          "Masuk",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                            }),
-                          ],
+              child: Column(
+                children: [
+                  const SizedBox(height: 40),
+
+                  // LOGO
+                  Container(
+                    width: 96,
+                    height: 96,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: whiteColor,
+                      boxShadow: [
+                        BoxShadow(
+                          color: primaryPink.withOpacity(.25),
+                          blurRadius: 18,
+                          offset: const Offset(0, 10),
                         ),
+                      ],
+                      border: Border.all(
+                        color: primaryPink.withOpacity(.35),
+                        width: 2,
                       ),
                     ),
-                    const SizedBox(height: 18),
-                    Row(
-                      children: [
-                        Expanded(child: Container(height: 1, color: Colors.black.withOpacity(.08))),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Text(
-                            "atau",
-                            style: TextStyle(color: Colors.black.withOpacity(.45), fontWeight: FontWeight.w600),
-                          ),
+                    child: const Icon(
+                      Icons.shopping_bag_rounded,
+                      size: 46,
+                      color: primaryPink,
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+                  Text(
+                    "Selamat Datang",
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.black.withOpacity(.85),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    "Masuk untuk melanjutkan belanja",
+                    style: TextStyle(
+                      color: Colors.black.withOpacity(.55),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // FORM
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.fromLTRB(18, 18, 18, 20),
+                    decoration: BoxDecoration(
+                      color: whiteColor.withOpacity(.78),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: primaryPink.withOpacity(.15)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(.04),
+                          blurRadius: 24,
+                          offset: const Offset(0, 10),
                         ),
-                        Expanded(child: Container(height: 1, color: Colors.black.withOpacity(.08))),
                       ],
                     ),
-                    const SizedBox(height: 14),
-                    TextButton(
-                      onPressed: () => Get.to(() => RegisterView()),
-                      style: TextButton.styleFrom(
-                        foregroundColor: primaryPink,
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                      ),
-                      child: const Text(
-                        "Buat akun baru",
-                        style: TextStyle(fontWeight: FontWeight.w700),
+                    child: Form(
+                      key: controller.formKey,
+                      child: Column(
+                        children: [
+                          _Input(
+                            controller: controller.emailController,
+                            label: 'Email',
+                            hint: 'nama@email.com',
+                            icon: Icons.email_rounded,
+                          ),
+                          const SizedBox(height: 14),
+
+                          Obx(() => _Input(
+                                controller: controller.passwordController,
+                                label: 'Password',
+                                hint: '••••••••',
+                                icon: Icons.lock_rounded,
+                                obscure: !controller.isPasswordVisible.value,
+                                suffix: IconButton(
+                                  icon: Icon(
+                                    controller.isPasswordVisible.value
+                                        ? Icons.visibility_rounded
+                                        : Icons.visibility_off_rounded,
+                                    color: primaryPink,
+                                  ),
+                                  onPressed: controller.togglePasswordVisibility,
+                                ),
+                              )),
+
+                          const SizedBox(height: 10),
+
+                          Obx(() {
+                            return controller.isLoading.value
+                                ? const CircularProgressIndicator(
+                                    color: primaryPink,
+                                  )
+                                : SizedBox(
+                                    width: double.infinity,
+                                    height: 50,
+                                    child: ElevatedButton(
+                                      onPressed: controller.doLogin,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: primaryPink,
+                                        foregroundColor: whiteColor,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(14),
+                                        ),
+                                        elevation: 2.5,
+                                      ),
+                                      child: const Text(
+                                        "Masuk",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                          }),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 10),
-                  ],
-                ),
+                  ),
+
+                  const SizedBox(height: 18),
+
+                  // PEMBATAS
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          height: 1,
+                          color: Colors.black.withOpacity(.08),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(
+                          "atau",
+                          style: TextStyle(
+                            color: Colors.black.withOpacity(.45),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          height: 1,
+                          color: Colors.black.withOpacity(.08),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 14),
+
+                  TextButton(
+                    onPressed: () => Get.to(() => const RegisterView()),
+                    style: TextButton.styleFrom(
+                      foregroundColor: primaryPink,
+                    ),
+                    child: const Text(
+                      "Buat akun baru",
+                      style: TextStyle(fontWeight: FontWeight.w700),
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
+                ],
               ),
             ),
           ),
@@ -235,7 +266,8 @@ class _Input extends StatelessWidget {
     return TextFormField(
       controller: controller,
       obscureText: obscure,
-      validator: (v) => (v == null || v.isEmpty) ? '$label tidak boleh kosong' : null,
+      validator: (v) =>
+          (v == null || v.isEmpty) ? '$label tidak boleh kosong' : null,
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
@@ -243,11 +275,12 @@ class _Input extends StatelessWidget {
         suffixIcon: suffix,
         filled: true,
         fillColor: lightPinkBG,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         labelStyle: TextStyle(color: Colors.black.withOpacity(.6)),
         hintStyle: TextStyle(color: Colors.black.withOpacity(.35)),
         enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: primaryPink.withOpacity(.28), width: 1.2),
+          borderSide: BorderSide(color: primaryPink.withOpacity(.28)),
           borderRadius: BorderRadius.circular(14),
         ),
         focusedBorder: OutlineInputBorder(
@@ -269,6 +302,7 @@ class _Input extends StatelessWidget {
 
 class _Bubble extends StatelessWidget {
   const _Bubble({required this.color, required this.size});
+
   final Color color;
   final double size;
 
